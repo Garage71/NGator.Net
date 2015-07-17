@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html ng-app="ngatorApp">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGator.NET: News aggregator</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/Content/select.css")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/scripts/angular.js")
+    @Scripts.Render("~/scripts/angular-resource.js")
+    @Scripts.Render("~/scripts/angular-ui/ui-bootstrap.js")
+    @Scripts.Render("~/scripts/angular-ui/ui-bootstrap-tpls.js")
+    @Scripts.Render("~/scripts/angular-animate.js")
+    @Scripts.Render("~/scripts/select.js")
+    @Scripts.Render("~/scripts/app/ngator.js")
+    @Scripts.Render("~/scripts/app/controllers.js")
+    @Scripts.Render("~/scripts/app/services.js")
+    @Scripts.Render("~/scripts/app/directives.js")
+    @Scripts.Render("~/scripts/jquery.signalR-2.2.0.js")
+    @Scripts.Render("~/signalr/hubs")
+</head>
+<body ng-controller="RssSourcesController">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle selection</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("NGator.NET: News aggregator", "Index", "Home", new { area = "" }, new { @class = "navbar-brand", style = "vert-align: middle" })
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <form class="navbar-form navbar-right">
+                    <ui-select multiple ng-model="selectedSources.selected" theme="bootstrap" close-on-select="false" style="width: 500px">
+                        <ui-select-match placeholder="Выберите источники:">{{$item}}</ui-select-match>
+                        <ui-select-choices repeat="src in sources">
+                            {{src}}
+                        </ui-select-choices>
+                    </ui-select>
+                    <button type="submit" ng-disabled="selectedSources.selected.length === 0 || !loadButtonEnabled" ng-click="getNews()" class="btn btn-primary">Загрузить новости</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()        
+        <footer>
+            <pagination ng-show="newsList.length > 0" total-items="totalItems" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" ng-change="pageChanged()" num-pages="numPages"></pagination>
+            <hr />
+            <small><a href="https://github.com/garage71" target="_blank">&copy; 2015, Garage71</a></small>
+        </footer>
+    </div>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

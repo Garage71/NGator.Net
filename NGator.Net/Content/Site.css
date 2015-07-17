@@ -1,0 +1,90 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+/* UI.Select styles*/
+
+.select2 > .select2-choice.ui-select-match {
+      /* Because of the inclusion of Bootstrap */
+      height: 29px;
+}
+
+.selectize-control > .selectize-dropdown {
+    top: 36px;
+}
+
+.article-picture {
+    float: left;
+    padding: 5px;
+    max-width: 50%
+}
+
+.logo-picture {
+    max-height: 20%
+}
+
+/* Modals tune-up*/
+
+.modal-backdrop {
+  bottom:0;
+}
+
+.form-inline .form-control {
+  display: block;
+  width: 100%;
+}
+.form-inline .form-group {
+  display: inline-block;
+  margin-bottom: 0;
+  vertical-align: middle;
+}
+.form-inline:before, .form-inline:after {
+  display: table;
+  content: " ";
+}
+.form-inline:after {
+  clear: both;
+}
+.form-inline>[class*='col-']:not(button) {
+  padding-left:0;
+}
+
+
+.modal.fade .modal-dialog, .modal.in .modal-dialog {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+
+.modal-content {
+  position: absolute;
+  top:50%;
+  -ms-transform: translate(0,-50%);
+  -moz-transform: translate(0,-50%);
+  -webkit-transform: translate(0,-50%);
+  transform: translate(0,-50%);
+  width:100%;
+}

@@ -1,0 +1,46 @@
+﻿@{
+    ViewBag.Title = "NGator.NET - news aggregator";
+}
+<div class="jumbotron" ng-show="newsList.length === 0">
+    <h3 align="center">Выберите источники новостей</h3>
+</div>
+<br>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <accordion close-others="false">
+                <accordion-group ng-repeat="article in newsList"
+                                 is-open="article.IsOpened"
+                                 id="{{article.guid}}"
+                                 popover="{{article.quote}}"
+                                 popover-trigger="mouseenter"
+                                 popover-placement="left"
+                                 popover-animation="true">
+                    <accordion-heading class="container">
+                        {{article.header}}; <small>{{article.date}}</small><br><br><img ng-show="{{article.hasLogo}}" ng-src="api/sources/logo/?Id={{article.guid}}" title="{{article.source}}" class="logo-picture">
+                        <label ng-show="!article.hasLogo" style="color: blue">//{{article.source}}</label>
+                    </accordion-heading>
+                    <alert ng-show="article.body.body === ''" type="info">Загрузка новости</alert>
+                    <div id="{{article.guid + '-pic'}}"></div>
+                    {{article.body.body}}
+                    <br>
+                    <a href="{{article.link}}" target="_blank">//{{article.source}}</a>
+                </accordion-group>
+            </accordion>
+            <div ng-controller="ModalController">
+                <script type="text/ng-template" id="modalProgress.html">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Загрузка новостей, пожалуйста подождите</h3>
+                    </div>
+                    <div class="modal-body">                        
+                        <progressbar max="100" animate="true" value="currentProgress" type="success"><b>{{currentProgress}}%</b></progressbar>
+                    </div>
+                    <div class="modal-footer">                        
+                        <button class="btn btn-danger" ng-click="cancel()" remove-modal>Отмена</button>
+                    </div>
+                </script>                
+            </div>
+        </div>
+    </div>
+</div>
