@@ -17,7 +17,7 @@ namespace NGator.Net.Models
         /// <param name="page">Current page</param>
         /// <param name="refresh">Flag indicating that news should be refreshed</param>
         /// <returns>News headers</returns>
-        NewsHeaders GetNews(List<RssSource> sources, int page, bool refresh);
+        NewsHeaders GetNews(RssSources sources, int page, bool refresh);
 
         /// <summary>
         /// Loads news from single RSS source. Asynchronous call

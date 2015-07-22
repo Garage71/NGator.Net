@@ -149,7 +149,7 @@ namespace NGator.Net.Controllers
 
         private Task<RssSources> GetSources()
         {
-            var task = new Task<RssSources>(() => _rssSourcesProvider.GetRssSources());
+            var task = new Task<RssSources>(() => _rssSourcesProvider.GetRssSources(null));
             task.Start();
             return task;
         }
@@ -159,7 +159,7 @@ namespace NGator.Net.Controllers
             var task =
                 new Task<NewsHeaders>(
                     () =>
-                        _newsProvider.GetNews(_rssSourcesProvider.GetRssSources(sources.Sources).Sources, page, refresh));
+                        _newsProvider.GetNews(_rssSourcesProvider.GetRssSources(sources), page, refresh));
             task.Start();
             return task;
         }

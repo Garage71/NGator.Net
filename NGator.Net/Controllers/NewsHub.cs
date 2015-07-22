@@ -69,7 +69,7 @@ namespace NGator.Net.Controllers
                 return new NewsHeaders();
             }
 
-            var sources = _rssSourcesProvider.GetRssSources(rssSources.Sources).Sources;
+            var sources = _rssSourcesProvider.GetRssSources(rssSources).Sources;
             var totalSourcesCount = sources.Count;
             var progressIncrement = 100/totalSourcesCount;
             var totalProgress = 0;

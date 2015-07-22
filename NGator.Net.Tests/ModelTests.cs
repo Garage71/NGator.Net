@@ -11,7 +11,7 @@ namespace NGator.Net.Tests
         public void RssSourcesProviderTest()
         {
             var provider = new RssSourcesProvider();
-            var sources = provider.GetRssSources();
+            var sources = provider.GetRssSources(null);
         }
     }
 }

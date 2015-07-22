@@ -19,10 +19,10 @@ namespace NGator.Net.Models
         /// <param name="page">Current page</param>
         /// <param name="refresh">Flag indicating that news should be refreshed</param>
         /// <returns>News headers</returns>
-        public NewsHeaders GetNews(List<RssSource> sources, int page, bool refresh)
+        public NewsHeaders GetNews(RssSources sources, int page, bool refresh)
         {
             var articleHeaders = new List<NewsHeader>();
-            foreach (var headers in sources.Select(src => _rssProvider.GetArticlesHeaders(src, refresh)))
+            foreach (var headers in sources.Sources.Select(src => _rssProvider.GetArticlesHeaders(src, refresh)))
                 articleHeaders.AddRange(headers);
 
             var totalCount = articleHeaders.Count;
