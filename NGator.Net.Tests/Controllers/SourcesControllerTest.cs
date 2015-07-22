@@ -23,13 +23,13 @@ namespace NGator.Net.Tests.Controllers
             Url = "http://lenta.ru/rss"
         };
 
-        private SourcesController _controller;
-        private NewsHeader _header1;
-        private NewsHeader _header2;        
         private ArticleContainer _article1;
         private ArticleContainer _article2;
-        private byte[] _logo;
+        private SourcesController _controller;
         private byte[] _enclosure;
+        private NewsHeader _header1;
+        private NewsHeader _header2;
+        private byte[] _logo;
 
         [TestInitialize]
         public void Init()
@@ -37,13 +37,13 @@ namespace NGator.Net.Tests.Controllers
             //Arrange
 
             var rssSourcesMock = new Mock<IRssSourcesProvider>();
-            
-            rssSourcesMock.Setup(sourcesProvider => sourcesProvider.GetRssSources(It.IsAny<RssSources>())).Returns(() => new RssSources
-            {
-                Sources = new List<RssSource> {_rssSource}
-            });
-            
-            
+
+            rssSourcesMock.Setup(sourcesProvider => sourcesProvider.GetRssSources(It.IsAny<RssSources>()))
+                .Returns(() => new RssSources
+                {
+                    Sources = new List<RssSource> {_rssSource}
+                });
+
             _logo = File.ReadAllBytes("..\\..\\TestData\\logo.png");
             _enclosure = File.ReadAllBytes("..\\..\\TestData\\enclosure.jpg");
             _rssSource.Logo = _logo;
@@ -70,7 +70,7 @@ namespace NGator.Net.Tests.Controllers
                 Link = "http://lenta.ru/loren_ipsum_2",
                 PublishDate = new DateTime(2015, 07, 02),
                 Title = "Lorem ipsum 2",
-                Source = "Lenta.ru",                
+                Source = "Lenta.ru"
             };
 
             var newsProviderMock = new Mock<INewsProvider>();
@@ -94,9 +94,7 @@ namespace NGator.Net.Tests.Controllers
                             Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
                             Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
                             Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                                                                                                                                           
                 }
-                
             };
 
             _article2 = new ArticleContainer
@@ -115,7 +113,7 @@ namespace NGator.Net.Tests.Controllers
                 }
             };
 
-             var contentStorageMock = new Mock<IContentStorage>();
+            var contentStorageMock = new Mock<IContentStorage>();
             contentStorageMock.Setup(contentStorage => contentStorage.SaveArticle(It.IsAny<ArticleContainer>()))
                 .Returns(true);
             contentStorageMock.Setup(contentStorage => contentStorage.GetArticleByUrl("http://lenta.ru/loren_ipsum_1"))
@@ -133,37 +131,38 @@ namespace NGator.Net.Tests.Controllers
                     task.Start();
                     return task;
                 });
-            
 
-            
-            contentStorageMock.Setup(contentStorage => contentStorage.GetArticleByGuid(It.IsAny<Guid>())).Returns((Guid guid) =>
-            {
-                ArticleContainer article = null;
-                if (guid == _header1.Guid)
-                    article = _article1;
-                else if (guid == _header2.Guid)
-                    article = _article2;
-                var task = new Task<ArticleContainer>(() =>article);
-                task.Start();
-                return task;
-            });
-                       
+
+            contentStorageMock.Setup(contentStorage => contentStorage.GetArticleByGuid(It.IsAny<Guid>()))
+                .Returns((Guid guid) =>
+                {
+                    ArticleContainer article = null;
+                    if (guid == _header1.Guid)
+                        article = _article1;
+                    else if (guid == _header2.Guid)
+                        article = _article2;
+                    var task = new Task<ArticleContainer>(() => article);
+                    task.Start();
+                    return task;
+                });
+
             contentStorageMock.Setup(contentStorage => contentStorage.GetArticlesBySource(It.IsAny<RssSource>()))
                 .Returns(() => new List<ArticleContainer> {_article1, _article2});
 
 
-            var parserProviderMock = new Mock<IParserProvider>();            
+            var parserProviderMock = new Mock<IParserProvider>();
 
-            parserProviderMock.Setup(parserProvider => parserProvider.GetArticleBody(It.IsAny<Guid>())).Returns((Guid guid) =>
-            {
-                ArticleContainer article = null;
-                if (guid == _header1.Guid)
-                    article = _article1;
-                else if (guid == _header2.Guid)
-                    article = _article2;
-               
-                return article;
-            });
+            parserProviderMock.Setup(parserProvider => parserProvider.GetArticleBody(It.IsAny<Guid>()))
+                .Returns((Guid guid) =>
+                {
+                    ArticleContainer article = null;
+                    if (guid == _header1.Guid)
+                        article = _article1;
+                    else if (guid == _header2.Guid)
+                        article = _article2;
+
+                    return article;
+                });
 
             _controller = new SourcesController(rssSourcesMock.Object, newsProviderMock.Object,
                 contentStorageMock.Object, parserProviderMock.Object);
@@ -175,7 +174,7 @@ namespace NGator.Net.Tests.Controllers
             //Act 
             var asyncResult = _controller.Get();
             asyncResult.Wait();
-            
+
             Assert.IsNotNull(asyncResult);
             asyncResult.Wait();
             var res = asyncResult.Result;
@@ -243,11 +242,11 @@ namespace NGator.Net.Tests.Controllers
 
         [TestMethod]
         public void GetLogo()
-        {            
+        {
             //Act
             var asyncResult = _controller.GetLogo(_header1.Guid.ToString());
             asyncResult.Wait();
-            var res = asyncResult.Result;            
+            var res = asyncResult.Result;
             //Assert
             Assert.IsNotNull(res);
             Assert.IsTrue(res.StatusCode == HttpStatusCode.OK);
@@ -269,7 +268,7 @@ namespace NGator.Net.Tests.Controllers
             asyncResult1.Wait();
             var asyncResult2 = _controller.GetEnclosure(_header2.Guid.ToString());
             asyncResult2.Wait();
-            
+
             var res1 = asyncResult1.Result;
             var res2 = asyncResult2.Result;
             //Assert
@@ -286,7 +285,6 @@ namespace NGator.Net.Tests.Controllers
 
             Assert.IsNotNull(res2);
             Assert.IsTrue(res2.StatusCode == HttpStatusCode.NotFound);
-            
         }
     }
 }
