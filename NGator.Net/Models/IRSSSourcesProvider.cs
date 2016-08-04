@@ -11,9 +11,9 @@ namespace NGator.Net.Models
         /// <summary>
         ///     Gets RSS sources list
         /// </summary>
-        /// <param name="sites">Filter paremeter</param>
+        /// <param name="sources">Filter paremeter</param>
         /// <returns>Rss sources</returns>
-        RssSources GetRssSources(List<RssSource> sites = null);
+        RssSources GetRssSources(RssSources sources);
     }
 
     /// <summary>

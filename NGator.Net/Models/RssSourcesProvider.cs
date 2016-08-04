@@ -14,7 +14,7 @@ namespace NGator.Net.Models
         ///  Obtains list of RSS sources from Web.config
         /// </summary>
         /// <returns>List of Rss source URLs</returns>
-        public RssSources GetRssSources(List<RssSource> sites = null)
+        public RssSources GetRssSources(RssSources sources)
         {
             var appsettings = WebConfigurationManager.AppSettings;
             var srcs = new RssSources
@@ -31,8 +31,8 @@ namespace NGator.Net.Models
                         Url = url
                     }).ToList()
             };
-            if (sites != null)            
-                srcs.Sources = srcs.Sources.Where(src => sites.Any(site => site.SiteName == src.SiteName)).ToList();
+            if (sources != null)
+                srcs.Sources = srcs.Sources.Where(src => sources.Sources.Any(site => site.SiteName == src.SiteName)).ToList();
             
             return srcs;
         }

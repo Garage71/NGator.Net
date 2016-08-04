@@ -29,10 +29,10 @@ namespace NGator.Net.Controllers
         }
 
         /// <summary>
-        /// Asynchronious SignalR RPC call. Loads list of news headers and reports loading progress. Called from client
+        /// Asynchronous SignalR RPC call. Loads list of news headers and reports loading progress. Called from client
         /// </summary>
         /// <param name="jsonData">Request data in JSON format. Parsed inside</param>
-        /// <param name="progress">Progress repirting callback</param>
+        /// <param name="progress">Progress reporting callback</param>
         /// <returns>Container with list of news headers</returns>
         public async Task<NewsHeaders> LoadNews(JObject jsonData, IProgress<int> progress)
         {
@@ -65,11 +65,12 @@ namespace NGator.Net.Controllers
             }
             catch
             {
-                progress.Report(100);
+                if(progress != null)
+                    progress.Report(100);
                 return new NewsHeaders();
             }
 
-            var sources = _rssSourcesProvider.GetRssSources(rssSources.Sources).Sources;
+            var sources = _rssSourcesProvider.GetRssSources(rssSources).Sources;
             var totalSourcesCount = sources.Count;
             var progressIncrement = 100/totalSourcesCount;
             var totalProgress = 0;
@@ -85,14 +86,16 @@ namespace NGator.Net.Controllers
                 totalHeaders.Headers.AddRange(headers.Headers);
                 totalHeaders.TotalArticlesCount += headers.TotalArticlesCount;
                 totalProgress += progressIncrement;
-                progress.Report(totalProgress);
+                if(progress != null)
+                    progress.Report(totalProgress);
             }
 
             totalHeaders.Headers =
                 totalHeaders.Headers.OrderByDescending(article => article.PublishDate)
                     .Where((article, i) => (i >= NewsPerPage*(page - 1)) && (i < NewsPerPage*page))
                     .ToList();
-            progress.Report(100);
+            if(progress!= null)
+                progress.Report(100);
             return totalHeaders;
         }
     }
