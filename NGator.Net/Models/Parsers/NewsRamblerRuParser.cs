@@ -23,17 +23,19 @@ namespace NGator.Net.Models.Parsers
                 return false;
 
             var doc = task.Result;
-            var nodeList = doc.DocumentNode.Descendants().Where(x => x.Name == "article").ToList();
+            var nodeList = doc.DocumentNode.Descendants().Where(x => x.Name == "div" && x.Attributes["class"] != null &&
+                           x.Attributes["class"].Value.Contains("article__inner")).ToList();
             var newsBody = nodeList.FirstOrDefault();
             var sb = new StringBuilder();
             if (newsBody != null)
             {
-                foreach (var node in newsBody.ChildNodes.Where(n => n.Name == "p"))
+                foreach (var node in newsBody.ChildNodes.Where(n => n.Name == "div" && n.Attributes["class"] != null &&
+                           n.Attributes["class"].Value.Contains("article__paragraph")))
                     sb.Append(node.InnerText + " ");
 
                 var imgList = newsBody.Descendants().Where
                     (x => (x.Name == "img" && x.Attributes["class"] != null &&
-                           x.Attributes["class"].Value.Contains("b-article-photo-incut__image")))
+                           x.Attributes["class"].Value.Contains("article__image")))
                     .ToList();
                 var img = imgList.FirstOrDefault();
 

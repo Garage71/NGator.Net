@@ -72,12 +72,18 @@ namespace NGator.Net.Models
                                 where urlNode != null
                                 select urlNode.InnerText)
                             {
-                                GetContent(logoUrl).ContinueWith(response =>
+                                var url = logoUrl;
+                                if (!logoUrl.Contains("http"))
+                                    url = "http:" + url;
+                                GetContent(url).ContinueWith(response =>
                                 {
-                                    var content = response.Result.Content as StreamContent;
-                                    if (content != null)
-                                        content.ReadAsByteArrayAsync()
-                                            .ContinueWith(bytes => source.Logo = bytes.Result);
+                                    if (response.Result != null)
+                                    {
+                                        var content = response.Result.Content as StreamContent;
+                                        if (content != null)
+                                            content.ReadAsByteArrayAsync()
+                                                .ContinueWith(bytes => source.Logo = bytes.Result);
+                                    }
                                 }).Wait();
                                 break;
                             }
