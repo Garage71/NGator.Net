@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Web.Razor.Generator;
+using HtmlAgilityPack;
 using NGator.Net.Infrastructure;
 
 namespace NGator.Net.Models.Parsers
@@ -25,24 +27,20 @@ namespace NGator.Net.Models.Parsers
             var doc = task.Result;
             var nodeList = doc.DocumentNode.Descendants().Where
                 (x =>
-                    (x.Name == "div" && x.Attributes["class"] != null &&
-                     x.Attributes["class"].Value.Contains("js-newstext"))).ToList();
+                    x.Name == "div" && x.Attributes["class"] != null &&
+                     x.Attributes["class"].Value.Contains("article__text js-module js-mediator-article")).ToList();
             var newsBody = nodeList.FirstOrDefault();
             var sb = new StringBuilder();
             if (newsBody != null)
             {
-                var indexNode = newsBody.ChildNodes.FirstOrDefault(n => n.Name == "index");
+                var indexNode = GetDescendantByAttributes(newsBody, "div", "class", "article__item_html");
+
                 if (indexNode != null)
                 {
                     foreach (var node in indexNode.ChildNodes.Where(n => n.Name == "p"))
                         sb.Append(node.InnerText.Replace("&nbsp;", " ") + " ");
-
-                    var imgList = doc.DocumentNode.Descendants().Where
-                        (x =>
-                            (x.Name == "img" && x.Attributes["class"] != null &&
-                             x.Attributes["class"].Value.Contains("c-photoblock__image__inner__self js-gallery__preview")))
-                        .ToList();
-                    var img = imgList.FirstOrDefault();
+                    
+                    var img = GetDescendantByAttributes(newsBody, "img", "class", "photo__pic");
 
                     var hasPicture = false;
 
@@ -52,7 +50,7 @@ namespace NGator.Net.Models.Parsers
                         {
                             var url = img.Attributes["src"].Value;
 
-                            var binaryTask = GetBinaryContent("http:" + url);
+                            var binaryTask = GetBinaryContent(url);
                             binaryTask.Wait();
                             if (binaryTask.Result != null)
                             {
@@ -82,5 +80,25 @@ namespace NGator.Net.Models.Parsers
             }
             return false;
         }
+
+        private HtmlNode GetDescendantByAttributes(HtmlNode node, string name, string attribute, string value)
+        {
+            if (node.Name == name && node.HasAttributes)
+            {
+                var attr = node.GetAttributeValue(attribute, "");
+                if (!string.IsNullOrEmpty(attr) && attr.Contains(value))
+                    return node;
+            }
+            if (node.HasChildNodes)
+            {
+                foreach (var childNode in node.ChildNodes)
+                {
+                    var result = GetDescendantByAttributes(childNode, name, attribute, value);
+                    if (result != null)
+                        return result;
+                }
+            }
+            return null;
+        }        
     }
 }

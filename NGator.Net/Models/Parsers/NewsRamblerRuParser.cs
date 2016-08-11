@@ -24,7 +24,7 @@ namespace NGator.Net.Models.Parsers
 
             var doc = task.Result;
             var nodeList = doc.DocumentNode.Descendants().Where(x => x.Name == "div" && x.Attributes["class"] != null &&
-                           x.Attributes["class"].Value.Contains("article__inner")).ToList();
+                           x.Attributes["class"].Value.Contains("article__column")).ToList();
             var newsBody = nodeList.FirstOrDefault();
             var sb = new StringBuilder();
             if (newsBody != null)
